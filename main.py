@@ -34,7 +34,7 @@ ges_d = 0
 for item in Bauteil:
     ges_d = ges_d + item.d
 
-# Anzahl der Punkte pro Schicht
+# Anzahl der Elemente pro Baustoff
 n_i = 4
 n = len(Bauteil)*n_i+1
 
@@ -48,7 +48,7 @@ for i in range(n):
     else:
         matrix_Punkte.append(0)
 
-# allen Elementen die passende Wärmeleitung der Bauteile zuweisen
+# allen Elementen die passende Dickenaufteilung und Wärmeleitung der Baustoffe zuweisen
 matrix_Elemente = []
 Bauteil_zeiger = 0
 i2 = 0
@@ -64,17 +64,19 @@ for i in range(n-1):
 def Temperaturanpassung(Punkt, matrix_Punkte, matrix_Elemente):
     # Formel um die Temperatur eines Punktes mit den Nebenpunkten anzupassen
     # TODO: "Eins links, eins rechts abwechselnd berechnen"
-    R_0 = matrix_Elemente[Punkt-1][0]/matrix_Elemente[Punkt-1][1]
-    R_1 = matrix_Elemente[Punkt][0]/matrix_Elemente[Punkt][1]
+    R_0 = matrix_Elemente[Punkt-1][1]/matrix_Elemente[Punkt-1][0]
+    R_1 = matrix_Elemente[Punkt][1]/matrix_Elemente[Punkt][0]
     return (R_0 * matrix_Punkte[Punkt-1] + R_1 * matrix_Punkte[Punkt+1])/(R_0 + R_1)
 
 def Iteration(Anzahl, matrix_Punkte, matrix_Elemente):
     # plt.ion()
     for i in range(Anzahl):
+        print()
+        matrix_Punkte_tmp = matrix_Punkte.copy()
         for j in range(len(matrix_Punkte)):
             if j == 0 or j == len(matrix_Punkte)-1:
                 continue
-            matrix_Punkte[j] = Temperaturanpassung(j, matrix_Punkte, matrix_Elemente)
+            matrix_Punkte[j] = Temperaturanpassung(j, matrix_Punkte_tmp, matrix_Elemente)
         # plt.plot(matrix_Punkte)
         # plt.draw()
         # plt.pause(0.0001)
@@ -82,8 +84,6 @@ def Iteration(Anzahl, matrix_Punkte, matrix_Elemente):
     return matrix_Punkte
 
 Iteration(10000, matrix_Punkte, matrix_Elemente)
-print(matrix_Punkte)
-print(matrix_Elemente)
 
 # Temperaturverlauf plotten
 x_value=[0.0]
@@ -91,6 +91,5 @@ tmp2 = 0
 for i in range(len(matrix_Elemente)):
     tmp2 += round(matrix_Elemente[i][0], 4)
     x_value.append(round(tmp2, 4))
-print(x_value)
 plt.plot(x_value, matrix_Punkte)
 plt.show()
