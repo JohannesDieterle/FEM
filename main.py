@@ -65,7 +65,6 @@ def Temperaturanpassung(Punkt, matrix_Punkte, matrix_Elemente):
     # Formel um die Temperatur eines Punktes mit den Nebenpunkten anzupassen
     R_0 = matrix_Elemente[Punkt-1]/dicke_Elemente
     R_1 = matrix_Elemente[Punkt]/dicke_Elemente
-    print((R_0 * matrix_Punkte[Punkt-1] + R_1 * matrix_Punkte[Punkt+1])/(R_0 + R_1))
     return (R_0 * matrix_Punkte[Punkt-1] + R_1 * matrix_Punkte[Punkt+1])/(R_0 + R_1)
 
 def Iteration(Anzahl, matrix_Punkte, matrix_Elemente):
