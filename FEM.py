@@ -1,10 +1,5 @@
 """File to outsource functions and classes"""
 
-class Baustoff:
-    def __init__(self):
-        self.d = 0  # Dicke, m
-        self.lambdaX = 0  # Wärmeleitfähigkeit, W/(m*K)
-
 def Temperaturanpassung(Punkt, matrix_Punkte, matrix_Elemente):
     # Formel um die Temperatur eines Punktes mit den Nebenpunkten anzupassen
     R_0 = matrix_Elemente[Punkt-1][1]/matrix_Elemente[Punkt-1][0]

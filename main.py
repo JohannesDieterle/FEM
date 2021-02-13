@@ -1,38 +1,26 @@
 # 2D Finite-Elemente-Methode für den Wärmeverlauf in einem Bauteil
 import matplotlib.pyplot as plt
 import FEM
+import FEM_elements
 
-n = 0  # Anzahl an Elemente
 theta_i = 20  # Innentemperatur, °C
 theta_e = -5  # Außentemperatur, °C
-
-B_Holz = FEM.Baustoff()
-B_Holz.d = 0.1
-B_Holz.lambdaX = 0.1
-
-B_Beton = FEM.Baustoff()
-B_Beton.d = 0.3
-B_Beton.lambdaX = 2.1
-
-B_Dämmung = FEM.Baustoff()
-B_Dämmung.d = 0.1
-B_Dämmung.lambdaX = 0.035
-
-B_Putz = FEM.Baustoff()
-B_Putz.d = 0.01
-B_Putz.lambdaX = 0.7
+r_si = 0.13 # Übergangswiderstand
 
 # Aufbau des Bauteils
-Bauteil = [B_Putz, B_Holz, B_Beton, B_Dämmung, B_Putz]
+Bauteil = [[FEM_elements.Putz, 0.01],
+           [FEM_elements.Beton, 0.2],
+           [FEM_elements.Dämmung, 0.18],
+           [FEM_elements.Putz, 0.01]]
 
 # Gesamtdicke
 ges_d = 0
 for item in Bauteil:
-    ges_d = ges_d + item.d
+    ges_d = ges_d + item[1]
 
-# Anzahl der Elemente pro FEM.Baustoffe
+# Anzahl der Elemente pro Baustoff
 n_i = 4
-n = len(Bauteil)*n_i+1
+n = len(Bauteil)*n_i+3
 
 # allen Punkten eine Temperatur zuweisen und Randbedingungen übernehmen
 matrix_Punkte = []
@@ -49,12 +37,18 @@ matrix_Elemente = []
 Bauteil_zeiger = 0
 i2 = 0
 for i in range(n-1):
-    if Bauteil[Bauteil_zeiger].d == i2*Bauteil[Bauteil_zeiger].d/n_i:
+    if i == 0:
+        matrix_Elemente.append([0.01, r_si*100])
+        continue
+    elif i == n-2:
+        matrix_Elemente.append([0.01, 4])
+        continue
+    if Bauteil[Bauteil_zeiger][1] == i2*Bauteil[Bauteil_zeiger][1]/n_i:
         i2 = 0
         Bauteil_zeiger += 1
     if len(Bauteil) == Bauteil_zeiger:
         break
-    matrix_Elemente.append([Bauteil[Bauteil_zeiger].d/n_i, Bauteil[Bauteil_zeiger].lambdaX])
+    matrix_Elemente.append([Bauteil[Bauteil_zeiger][1]/n_i, Bauteil[Bauteil_zeiger][0].lambdaX])
     i2 += 1
 
 # Plot in der X-Richtung richtig strecken
