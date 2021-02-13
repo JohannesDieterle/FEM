@@ -71,25 +71,26 @@ def Temperaturanpassung(Punkt, matrix_Punkte, matrix_Elemente):
 def Iteration(Anzahl, matrix_Punkte, matrix_Elemente):
     # plt.ion()
     for i in range(Anzahl):
-        print()
         matrix_Punkte_tmp = matrix_Punkte.copy()
         for j in range(len(matrix_Punkte)):
             if j == 0 or j == len(matrix_Punkte)-1:
                 continue
             matrix_Punkte[j] = Temperaturanpassung(j, matrix_Punkte_tmp, matrix_Elemente)
-        # plt.plot(matrix_Punkte)
+        # plt.plot(x_value,matrix_Punkte)
         # plt.draw()
         # plt.pause(0.0001)
         # plt.clf()
     return matrix_Punkte
 
-Iteration(10000, matrix_Punkte, matrix_Elemente)
-
-# Temperaturverlauf plotten
+# Plot in der X-Richtung richtig strecken
 x_value=[0.0]
 tmp2 = 0
 for i in range(len(matrix_Elemente)):
     tmp2 += round(matrix_Elemente[i][0], 4)
     x_value.append(round(tmp2, 4))
+
+Iteration(10000, matrix_Punkte, matrix_Elemente)
+
+# Temperaturverlauf plotten
 plt.plot(x_value, matrix_Punkte)
 plt.show()
