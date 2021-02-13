@@ -1,9 +1,9 @@
 # 1D Finite-Elemente-Methode für den Wärmeverlauf in einem Baustoff
 import matplotlib.pyplot as plt
 
-n = 0  # Anzahl an Elemente
 theta_i = 20  # Innentemperatur, °C
 theta_e = -5  # Außentemperatur, °C
+r_si = 0.13  # Wärmeübergangswiderstand
 
 class Baustoff:
     def __init__(self):
@@ -36,7 +36,7 @@ for item in Bauteil:
 
 # Anzahl der Elemente pro Baustoff
 n_i = 4
-n = len(Bauteil)*n_i+1
+n = len(Bauteil)*n_i+3
 
 # allen Punkten eine Temperatur zuweisen und Randbedingungen übernehmen
 matrix_Punkte = []
@@ -53,6 +53,11 @@ matrix_Elemente = []
 Bauteil_zeiger = 0
 i2 = 0
 for i in range(n-1):
+    if i == 0:
+        matrix_Elemente.append([0.01, r_si*100])
+        continue
+    elif i == n-2:
+        matrix_Elemente.append([0.01, 4])
     if Bauteil[Bauteil_zeiger].d == i2*Bauteil[Bauteil_zeiger].d/n_i:
         i2 = 0
         Bauteil_zeiger += 1
